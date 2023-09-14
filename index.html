@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google画像検索</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <form id="searchForm">
+        <input type="text" id="query" required>
+        <input type="submit" value="検索">
+    </form>
+    <div id="results"></div>
+    <button id="loadMore" onclick="loadImages()" style="display: none;">もっと読み込む</button>
+
+    <script>
+        var start = 1;
+        var query = "";
+
+        function loadImages() {
+            $.get("https://www.googleapis.com/customsearch/v1", {
+                key: "AIzaSyDcZF2yzBWieAsgEA8-9sXRzm5zFrJLQKk",
+                cx: "6574edcba7c4e44fa",
+                q: query,
+                searchType: "image",
+                start: start
+            }).done(function(data) {
+                data.items.forEach(function(item) {
+                    $("#results").append("<img width='10%' height='10%' src='" + item.link + "' alt='" + item.snippet + "'>");
+                });
+                start += 10;
+                $("#loadMore").show();
+            }).fail(function() {
+                alert("An error occurred.");
+            });
+        }
+
+        $("#searchForm").submit(function(event) {
+            event.preventDefault();
+            query = $("#query").val();
+            $("#results").empty();
+            start = 1;
+            loadImages();
+        });
+    </script>
+</body>
+</html>
